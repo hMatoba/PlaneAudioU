@@ -175,6 +175,52 @@ namespace PlaneAudioU
                 libProgress.IsActive = false;
             };
 
+            volumeSlider.ValueChanged += (sender, e) =>
+            {
+                var volume = ((Slider)sender).Value;
+                if (volume == 0.0)
+                {
+                    soundImage0.Visibility = Visibility.Visible;
+                    soundImage1.Visibility = Visibility.Collapsed;
+                    soundImage2.Visibility = Visibility.Collapsed;
+                    soundImage3.Visibility = Visibility.Collapsed;
+                    soundImage4.Visibility = Visibility.Collapsed;
+                }
+                else if (0.0 < volume && volume <= 0.25)
+                {
+                    soundImage0.Visibility = Visibility.Collapsed;
+                    soundImage1.Visibility = Visibility.Visible;
+                    soundImage2.Visibility = Visibility.Collapsed;
+                    soundImage3.Visibility = Visibility.Collapsed;
+                    soundImage4.Visibility = Visibility.Collapsed;
+                }
+                else if (0.25 < volume && volume <= 0.5)
+                {
+                    soundImage0.Visibility = Visibility.Collapsed;
+                    soundImage1.Visibility = Visibility.Collapsed;
+                    soundImage2.Visibility = Visibility.Visible;
+                    soundImage3.Visibility = Visibility.Collapsed;
+                    soundImage4.Visibility = Visibility.Collapsed;
+                }
+                else if (0.5 < volume && volume <= 0.75)
+                {
+                    soundImage0.Visibility = Visibility.Collapsed;
+                    soundImage1.Visibility = Visibility.Collapsed;
+                    soundImage2.Visibility = Visibility.Collapsed;
+                    soundImage3.Visibility = Visibility.Visible;
+                    soundImage4.Visibility = Visibility.Collapsed;
+                }
+                else if (0.75 < volume && volume <= 1.0)
+                {
+                    soundImage0.Visibility = Visibility.Collapsed;
+                    soundImage1.Visibility = Visibility.Collapsed;
+                    soundImage2.Visibility = Visibility.Collapsed;
+                    soundImage3.Visibility = Visibility.Collapsed;
+                    soundImage4.Visibility = Visibility.Visible;
+                }
+
+            };
+            
             var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += (sender, e) =>

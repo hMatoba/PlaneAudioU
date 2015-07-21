@@ -36,19 +36,25 @@
             <MediaElement Name="mediaElement" Width="0" Height="0" 
                           Volume="{Binding ElementName=volumeSlider, Path=Value}"></MediaElement>
             <StackPanel Width="auto" Height="auto" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="rewindButton" Margin="10, 10, 10, 5" Width="30" Height="30" Padding="0">
+                <Button Name="rewindButton" Margin="10, 0, 10, 5" Width="30" Height="30" Padding="0">
                     <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="Assets/appbar.control.rewind.png"></Image>
                 </Button>
-                <Button Name="playButton" Margin="10, 10, 10, 5" Width="30" Height="30" Padding="0">
+                <Button Name="playButton" Margin="10, 0, 10, 5" Width="30" Height="30" Padding="0">
                     <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="Assets/appbar.control.resume.png"></Image>
                 </Button>
-                <Button Name="forwardButton" Margin="10, 10, 10, 5" Width="30" Height="30" Padding="0">
+                <Button Name="forwardButton" Margin="10, 0, 10, 5" Width="30" Height="30" Padding="0">
                     <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="Assets/appbar.control.fastforward.png"></Image>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Image Source="Assets/appbar.sound.0.png" Width="50" />
-                <Slider x:Name="volumeSlider" Width="200" Maximum="1.0" Minimum="0.0" Value="0.1" StepFrequency="0.01"/>
+                <StackPanel Width="40" Height="40">
+                    <Image Name="soundImage0" Source="Assets/appbar.sound.mute.png" Width="40" Height="40" Visibility="Collapsed"/>
+                    <Image Name="soundImage1" Source="Assets/appbar.sound.0.png" Width="40" Height="40" />
+                    <Image Name="soundImage2" Source="Assets/appbar.sound.1.png" Width="40" Height="40" Visibility="Collapsed"/>
+                    <Image Name="soundImage3" Source="Assets/appbar.sound.2.png" Width="40" Height="40" Visibility="Collapsed"/>
+                    <Image Name="soundImage4" Source="Assets/appbar.sound.3.png" Width="40" Height="40" Visibility="Collapsed"/>
+                </StackPanel>
+                <Slider x:Name="volumeSlider" Width="200" Maximum="1.0" Minimum="0.0" Value="0.1" StepFrequency="0.01" Margin="0" Height="38"/>
             </StackPanel>
         </StackPanel>
 
