@@ -18,11 +18,17 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Padding="5"  Name="selectedItem" Background="AliceBlue" Grid.Column="0" Grid.Row="0">
-            <TextBlock Name="albumTitleBlock" FontSize="14" FontWeight="Bold"></TextBlock>
-            <StackPanel Name="trackPanel" Margin="8, 8, 0, 0"></StackPanel>
-        </StackPanel>
-        <ScrollViewer Grid.Column="1" Grid.Row="0" Background="#FFF0FFF0">
+        <Grid Padding="5"  Name="selectedItem" Background="AliceBlue" Grid.Column="0" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Name="albumTitleBlock" FontSize="14" FontWeight="Bold"></TextBlock>
+            <ScrollViewer Grid.Row="1" Padding="8, 8, 0, 0">
+                <StackPanel Name="trackPanel" Margin="8, 0, 0, 0"></StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <ScrollViewer Grid.Column="1" Grid.Row="0" Background="#FFF0FFF0" Padding="0,5,0,5">
             <ListView Name="albumPanel">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
