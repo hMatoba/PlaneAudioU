@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Data.Json;
 using Windows.Storage;
@@ -10,15 +11,28 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace PlaneAudioU
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    /// 
+    public partial class App : Application
+    {
+        static SQLite.SQLiteAsyncConnection db;
+        static ManualResetEvent DBLoaded = new ManualResetEvent(false);
+
+        public static Task<SQLiteAsyncConnection> GetDatabaseAsync()
+        {
+            return Task.Run(() =>
+            {
+                DBLoaded.WaitOne();
+                return db;
+            });
+        }
+    }
+
+
     [Table("Album")]
     class Album
     {
@@ -109,7 +123,6 @@ namespace PlaneAudioU
         private Album playingAlbum = null;
         private int playingTrackNum = -1;
         private List<string> shownAlbums = new List<string>() { };
-        private SQLiteAsyncConnection dbConnection = null;
         private NotRandom notRandom;
         private List<Brush> colorPalette;
 
@@ -137,10 +150,18 @@ namespace PlaneAudioU
             notRandom = new NotRandom(colorPalette.Count);
         }
 
-        async void ConnectDB()
+        void ConnectDB()
         {
-            dbConnection = new SQLiteAsyncConnection("PlaneAudioU.db");
-            await dbConnection.CreateTableAsync<Album>();
+            var folder = ApplicationData.Current.LocalFolder.Path;
+            Debug.WriteLine(folder);
+            var db = new SQLiteConnection(System.IO.Path.Combine(folder, "PlaneAudioU.db"));
+            db.CreateTable<Album>();
+        }
+
+
+        SQLiteAsyncConnection GetConnection()
+        {
+            return new SQLiteAsyncConnection("PlaneAudioU.db");
         }
 
         void SetEvents()
@@ -233,6 +254,7 @@ namespace PlaneAudioU
 
         async void PickAlbums()
         {
+            var dbConnection = new SQLiteAsyncConnection("PlaneAudioU.db");
             var albums = await dbConnection.Table<Album>().OrderBy(a => a.AlbumID).ToListAsync();
             if (albums.Count() > 0)
             {
@@ -259,6 +281,7 @@ namespace PlaneAudioU
 
         async Task<Album> GetAlbumFromDB(string albumID)
         {
+            var dbConnection = new SQLiteAsyncConnection("PlaneAudioU.db");
             var album = await dbConnection.Table<Album>().Where(a => a.AlbumID == albumID).FirstAsync();
             return album;
         }
@@ -268,8 +291,10 @@ namespace PlaneAudioU
         {
             var now = DateTime.Now;
             var albumFolders = await KnownFolders.MusicLibrary.GetFoldersAsync(Windows.Storage.Search.CommonFolderQuery.GroupByArtist);
+            Debug.WriteLine(albumFolders.Count);
             foreach (var albumFolder in albumFolders)
             {
+                Debug.WriteLine(albumFolder.Name);
                 var files = from b in await albumFolder.GetFilesAsync()
                             where b.Name.EndsWith(".wma") || b.Name.EndsWith(".mp3")
                             select b;
@@ -290,7 +315,8 @@ namespace PlaneAudioU
                     var yearDesc = 10000 - props[0].Year;
                     var albumID = $"{props[0].Artist} {yearDesc} {props[0].Album}";
 
-                    var album = await dbConnection
+                    var db1 = new SQLiteAsyncConnection("PlaneAudioU.db");
+                    var album = await db1
                                       .Table<Album>()
                                       .Where(a => a.AlbumID == albumID)
                                       .FirstOrDefaultAsync();
@@ -305,18 +331,21 @@ namespace PlaneAudioU
                         Added = now
                     };
 
+                    var db2 = new SQLiteAsyncConnection("PlaneAudioU.db");
                     if (album == null)
                     {
-                        await dbConnection.InsertAsync(albumNew);
+
+                        await db2.InsertAsync(albumNew);
                     }
                     else
                     {
-                        await dbConnection.UpdateAsync(albumNew);
+                        await db2.UpdateAsync(albumNew);
                     }
 
                     albumPool.Add(albumNew);
                 }
 
+                Debug.WriteLine("album pool. " + albumPool.Count.ToString());
                 if (albumPool.Count() > 0)
                 {
                     var albumToShow = (from a in albumPool
@@ -337,9 +366,13 @@ namespace PlaneAudioU
                 }
 
             }
-            foreach (var oldAlbum in await dbConnection.Table<Album>().Where(a => now > a.Added).ToListAsync())
+
+            Debug.WriteLine("Saving to db.");
+            var db3 = new SQLiteAsyncConnection("PlaneAudioU.db");
+            foreach (var oldAlbum in await db3.Table<Album>().Where(a => now > a.Added).ToListAsync())
             {
-                await dbConnection.DeleteAsync(oldAlbum);
+                var db4 = new SQLiteAsyncConnection("PlaneAudioU.db");
+                await db4.DeleteAsync(oldAlbum);
             }
 
         }
@@ -366,6 +399,7 @@ namespace PlaneAudioU
         async void AlbumButton_Clicked(object sender, RoutedEventArgs e)
         {
             var albumID = (string)(((Button)sender).Tag);
+            var dbConnection = new SQLiteAsyncConnection("PlaneAudioU.db");
             playingAlbum = await dbConnection.Table<Album>().Where(a => a.AlbumID.Equals(albumID)).FirstOrDefaultAsync();
             if (playingAlbum == null)
             {

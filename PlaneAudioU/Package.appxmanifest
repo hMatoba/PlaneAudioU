@@ -1,25 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="f66c540e-462f-4f8f-8509-9ea317f96881" Publisher="CN=john" Version="0.1.0.0" />
-  <mp:PhoneIdentity PhoneProductId="f66c540e-462f-4f8f-8509-9ea317f96881" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  IgnorableNamespaces="uap mp">
+
+  <Identity
+    Name="9150e5d2-de71-498a-8c50-50efa3115f5a"
+    Publisher="CN=h"
+    Version="1.0.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="9150e5d2-de71-498a-8c50-50efa3115f5a" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
   <Properties>
     <DisplayName>PlaneAudioU</DisplayName>
-    <PublisherDisplayName>john</PublisherDisplayName>
+    <PublisherDisplayName>h</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
+
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
+
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="x-generate"/>
   </Resources>
+
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="PlaneAudioU.App">
-      <uap:VisualElements DisplayName="PlaneAudioU" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="PlaneAudioU" BackgroundColor="#464646">
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="PlaneAudioU.App">
+      <uap:VisualElements
+        DisplayName="PlaneAudioU"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Description="PlaneAudioU"
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
+
   <Capabilities>
     <Capability Name="internetClient" />
     <uap:Capability Name="musicLibrary" />
