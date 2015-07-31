@@ -266,10 +266,15 @@ namespace PlaneAudioU
                         albumPanel.Items.Add(GetArtistRect(album.Artist));
                         preArtist = album.Artist;
                     }
-                    var button = await album.GetButton();
-                    button.Click += AlbumButton_Clicked;
-                    albumPanel.Items.Add(button);
-                    shownAlbums.Add(album.AlbumID);
+                    try
+                    {
+                        var button = await album.GetButton();
+                        button.Click += AlbumButton_Clicked;
+                        albumPanel.Items.Add(button);
+                        shownAlbums.Add(album.AlbumID);
+                    }
+                    catch
+                    { }
                 }
             }
             else
@@ -291,12 +296,11 @@ namespace PlaneAudioU
         {
             var now = DateTime.Now;
             var albumFolders = await KnownFolders.MusicLibrary.GetFoldersAsync(Windows.Storage.Search.CommonFolderQuery.GroupByArtist);
-            Debug.WriteLine(albumFolders.Count);
             foreach (var albumFolder in albumFolders)
             {
                 Debug.WriteLine(albumFolder.Name);
                 var files = from b in await albumFolder.GetFilesAsync()
-                            where b.Name.EndsWith(".wma") || b.Name.EndsWith(".mp3")
+                            where !b.Path.EndsWith(".jpg")
                             select b;
                 var propDict = (from b in files
                                 select new { b.Properties.GetMusicPropertiesAsync().AsTask().Result,
